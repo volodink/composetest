@@ -1,10 +1,23 @@
 version: '2'
 services:
-  web:
-    build: .
+  loadb:
+    build: lbal
     ports:
-     - "5000:5000"
-    volumes:
-     - .:/code
+     - "80:80"
+    depends_on:
+      - "web1"
+      - "web2"
+  web1:
+    build: webapp
+#    ports:
+#     - "5000:5000"
+    depends_on:
+      - "redis"
+  web2:
+    build: webapp
+#    ports:
+#     - "5000:5000"
+    depends_on:
+      - "redis"
   redis:
     image: "redis:alpine"
