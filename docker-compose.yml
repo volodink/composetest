@@ -10,7 +10,7 @@ services:
   web1:
     build: webapp
 #    ports:
-#     - "5000:5000"
+      #- "5000:5000"
     depends_on:
       - "redis"
   web2:
