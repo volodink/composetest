@@ -5,13 +5,13 @@ services:
     ports:
       - "80:80"
       - "5500:5500"
-    #depends_on:
-    #  - "web1"
+    depends_on:
+      - "web1"
   web1:
     build: webapp
     volumes:
       - ./webapp:/code
-    #depends_on:
-    #  - "redis"
+    depends_on:
+      - "redis"
   redis:
     image: "redis"
