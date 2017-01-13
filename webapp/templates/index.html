@@ -3,13 +3,37 @@
 <head>
 	<meta charset="UTF-8">
 	<title>HIT COUNTER</title>
+    <style type="text/css">
+        h2 {
+            font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+            color: fuchsia;
+        }
+
+        p {
+            font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+            color: black;
+        }
+
+        .users_online {
+            font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+            color: blue;
+        }
+    </style>
 </head>
 <body>
-
-    <h1>Hello World!</h1>
+    <h2>Hello World!!!</h2>
 	<p>I have been seen <span id="hits_count">0</span> times.</p>
 	<p>So, you hit REDIS for <span id="rhits_count">0</span> times.</p>
 	<p>Server HOST IP=<span id="host_ip">0.0.0.0</span> and HOST=<span id="host">random_number_lol</span>.</p>
+
+    <p>Users online: <span id="users_online" class="users_online">0</span></p>
+
+    <form action="#" id="mform">
+        <input id="form-message">
+        <input id="form-button" type="submit">
+    </form>
+
+    <div id="messages-list"></div>
 
     <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='bower_components/socket.io-client/dist/socket.io.slim.min.js') }}"></script>
@@ -17,17 +41,35 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var url = 'http://' + document.domain + ':' + location.port;
+
             var socket = io.connect(url + "/mcc");
+
             socket.on('hits_count', function (msg) {
                 var hits_count = msg['hits_count'];
                 var host_ip = msg['host_ip'];
                 var host = msg['host'];
+                var users_online = msg['users_online'];
 
                 $("#hits_count").html(hits_count);
                 $("#rhits_count").html(hits_count);
                 $("#host_ip").html(host_ip);
                 $("#host").html(host);
-            })
+                $("#users_online").html(users_online);
+            });
+
+            $('#mform').submit(function () {
+                socket.emit('msg',
+                                    {
+                                        'message': $('#form-message').val()
+                                    });
+                $('#form-message').val('');
+                return false;
+            });
+
+            socket.on('msg', function (msg) {
+                $('#messages-list').prepend('<p>' + msg.message + '</p>');
+            });
+
         });
     </script>
 </body>

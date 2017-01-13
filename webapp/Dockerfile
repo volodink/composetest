@@ -1,4 +1,5 @@
 FROM python:3.5
+MAINTAINER Konstantin Volodin, volodin.konstantin@gmail.com
 
 COPY ./requirements.txt /
 RUN pip install -r /requirements.txt
@@ -29,10 +30,14 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
   && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
-RUN npm install -g bower
+RUN npm install -g bower && npm install -g gulp-cli  && npm install -g browser-sync
 
 WORKDIR /code
 ADD . /code
+
+RUN chmod +x start.sh
+
+RUN npm install
 
 WORKDIR /code/static
 
@@ -41,5 +46,10 @@ RUN bower install
 WORKDIR /code
 
 EXPOSE 5000
-#CMD ["ls", "static/bower_components/socket.io-client/dist"]
-CMD ["python", "app.py"]
+EXPOSE 5500
+
+CMD ["ls", "-a"]
+#CMD ["python3", "app.py"]
+
+ENTRYPOINT ["./start.sh"]
+#CMD ["gulp"]

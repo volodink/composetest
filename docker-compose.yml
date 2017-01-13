@@ -3,21 +3,15 @@ services:
   loadb:
     build: lbal
     ports:
-     - "80:80"
-    depends_on:
-      - "web1"
-      - "web2"
+      - "80:80"
+      - "5500:5500"
+    #depends_on:
+    #  - "web1"
   web1:
     build: webapp
-#    ports:
-      #- "5000:5000"
-    depends_on:
-      - "redis"
-  web2:
-    build: webapp
-#    ports:
-#     - "5000:5000"
-    depends_on:
-      - "redis"
+    volumes:
+      - ./webapp:/code
+    #depends_on:
+    #  - "redis"
   redis:
-    image: "redis:alpine"
+    image: "redis"
